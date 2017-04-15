@@ -1,6 +1,10 @@
 # IntroRL-TensorFlow
 Reinforcement Learning In TensorFlow
 
+## Q Learning
+
+## Sarsa Learning
+
 ## n-armed bandit problem
 ### optimal action with step
 ![n-armed bandit optimal action %](https://github.com/zzw922cn/IntroRL-TensorFlow/blob/master/img/armedbandit_optimal_actions.png)

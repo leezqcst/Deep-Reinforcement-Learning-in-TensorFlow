@@ -8,10 +8,57 @@ import sys
 sys.path.append('../')
 sys.dont_write_bytecode = True
 
-from utils.agent_base import Agent
-from utils.environment_base import Environment
+import numpy as np
+import gym
+import matplotlib.pyplot as plt
 
-class QAgent(Agent):
+class QAgent(object):
 
-  def __init__(self, name, lr):
-    Agent.__init__(self, name, lr)
+  def __init__(self, name, lr, epsilon, gamma, env_name):
+    self.name = name
+    self.lr = lr
+    self.epsilon = epsilon
+    self.gamma = gamma
+    env = gym.make(env_name)
+
+    self.action_space = env.action_space
+    self.action_space_num = env.action_space.n
+    self.observation_space = env.observation_space
+    self.observation_space_num = env.observation_space.n
+    self.env = env
+    self.qTable = np.zeros([self.observation_space_num, self.action_space_num])
+
+  def reset(self):
+    return self.env.reset()
+
+  def render(self):
+    self.env.render()
+
+  def close(self):
+    self.env.close()
+
+  def pick_action(self, observation, episode, algo='e-epsilon'):
+    if algo == 'e-epsilon':
+      if np.random.uniform() < self.epsilon:
+        action_value = self.qTable[observation, :]
+        softmax = lambda x: np.exp(x-np.max(x))/np.exp(x-np.max(x)).sum()
+        action_value = softmax(action_value)
+        np.random.shuffle(action_value)
+        action = action_value.argmax()
+      else:
+        action = np.random.choice(range(self.action_space_num))
+      return action 
+    elif algo == 'noisy':
+      action_value = self.qTable[observation, :]
+      action_value += np.random.randn(self.action_space_num)/(episode+1)
+      action = action_value.argmax()
+      return action 
+
+  def step(self, action):
+    observation, reward, done, info = self.env.step(action)
+    return observation, reward, done, info
+
+  def learn(self, state, action, reward, new_state):
+    update = reward + self.gamma*(self.qTable[new_state,:].max()) - self.qTable[state, action]
+    self.qTable[state, action] += self.lr*update
+    

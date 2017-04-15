@@ -14,6 +14,7 @@ sys.dont_write_bytecode = True
 
 import six
 import gym
+from gym import envs
 
 class Environment(object):
   
@@ -21,16 +22,16 @@ class Environment(object):
     self.name = name
     env = gym.make(name)
     self.action_space = env.action_space
-    self.action_space_num = env.action_space_num
+    self.action_space_num = env.action_space.n
     self.observation_space = env.observation_space
-    self.observation_space_num = env.observation_space_num
+    self.observation_space_num = env.observation_space.n
     self.env = env
 
   def reset(self):
-    self.env.reset()
+    return self.env.reset()
 
   def render(self):
-    self.env.render()
+    return self.env.render()
 
   def step(self, action):
     if self.action_space.contains(action): 
@@ -38,3 +39,7 @@ class Environment(object):
       return observation, reward, done, info
     else:
       raise ValueError('No such action: %s'%str(action))
+
+  @staticmethod
+  def get_all_envs():
+    return envs.registry.all()
