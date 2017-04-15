@@ -1,8 +1,12 @@
 #coding=utf-8
+import sys
+sys.path.append('../')
+sys.dont_write_bytecode = True
 import numpy as np
 import argparse
-from utils import printboard
+from utils.printboard import printboard
 import matplotlib.pyplot as plt
+
 plt.rcParams['axes.facecolor'] = 'white'
 
 # 命令行接收参数

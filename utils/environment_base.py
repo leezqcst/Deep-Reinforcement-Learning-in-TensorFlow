@@ -4,33 +4,37 @@
 author:zzw922cn
 date:2017-4-12
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import sys
 sys.path.append('../')
 sys.dont_write_bytecode = True
 
-
 import six
+import gym
 
-@six.add_metaclass(abc.ABCMeta)
 class Environment(object):
   
-  @property
-  def name(self):
-    raise NotImplementedError
-
-  @property
-  def action_space(self):
-    raise NotImplementedError
-
-  @property
-  def observation_space(self):
-    raise NotImplementedError
+  def __init__(self, name):
+    self.name = name
+    env = gym.make(name)
+    self.action_space = env.action_space
+    self.action_space_num = env.action_space_num
+    self.observation_space = env.observation_space
+    self.observation_space_num = env.observation_space_num
+    self.env = env
 
   def reset(self):
-    raise NotImplementedError
+    self.env.reset()
 
   def render(self):
-    raise NotImplementedError
+    self.env.render()
 
   def step(self, action):
-    raise NotImplementedError
+    if self.action_space.contains(action): 
+      observation, reward, done, info = self.env.step(action)
+      return observation, reward, done, info
+    else:
+      raise ValueError('No such action: %s'%str(action))
