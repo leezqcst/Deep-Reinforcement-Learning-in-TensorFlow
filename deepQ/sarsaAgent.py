@@ -13,12 +13,14 @@ import gym
 import matplotlib.pyplot as plt
 
 from qAgent import QAgent
+
 class SarsaAgent(QAgent):
   def __init__(self, name, lr, epsilon, gamma, env_name):
     QAgent.__init__(self, name, lr, epsilon, gamma, env_name)
 
   def learn(self, state, action, reward, new_state, new_action):
-    update = reward + self.gamma*self.qTable[new_state, new_action] - self.qTable[state, action]
+    update = reward + self.gamma*
+        self.qTable[new_state, new_action] - self.qTable[state, action]
     self.qTable[state, action] += self.lr*update
     
 

@@ -11,6 +11,7 @@ sys.dont_write_bytecode = True
 import numpy as np
 import gym
 import matplotlib.pyplot as plt
+import time
 
 class QAgent(object):
 
@@ -31,20 +32,21 @@ class QAgent(object):
   def reset(self):
     return self.env.reset()
 
-  def render(self):
-    self.env.render()
+  def render(self, mode='human'):
+    self.env.render(mode)
 
   def close(self):
     self.env.close()
 
-  def pick_action(self, observation, episode, algo='e-epsilon'):
+  def pick_action(self, observation, episode, algo='e-epsilon', softmax=True):
     if algo == 'e-epsilon':
       if np.random.uniform() < self.epsilon:
         action_value = self.qTable[observation, :]
-        softmax = lambda x: np.exp(x-np.max(x))/np.exp(x-np.max(x)).sum()
-        action_value = softmax(action_value)
+        if softmax:
+          softmax_fn = lambda x: np.exp(x-np.max(x))/np.exp(x-np.max(x)).sum()
+          action_value = map(softmax_fn, action_value)
         np.random.shuffle(action_value)
-        action = action_value.argmax()
+        action = np.array(action_value).argmax()
       else:
         action = np.random.choice(range(self.action_space_num))
       return action 
@@ -59,6 +61,8 @@ class QAgent(object):
     return observation, reward, done, info
 
   def learn(self, state, action, reward, new_state):
-    update = reward + self.gamma*(self.qTable[new_state,:].max()) - self.qTable[state, action]
+    time.sleep(0.1)
+    update = reward + self.gamma*(self.qTable[new_state,:].max())
+        - self.qTable[state, action]
     self.qTable[state, action] += self.lr*update
     

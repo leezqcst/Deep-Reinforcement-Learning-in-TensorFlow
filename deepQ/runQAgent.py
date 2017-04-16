@@ -16,10 +16,11 @@ from qAgent import QAgent
 if __name__ == '__main__':
   np.random.seed(328922)
   num_episodes = 1500000
-  lr = 0.95
-  gamma = 0.99
-  epsilon = 0.90
+  lr = 0.01
+  gamma = 0.9
+  epsilon = 0.9
   algos = ['e-epsilon', 'noisy']
+
   env_name = 'FrozenLake-v0'
   qAgent = QAgent(name='q-learning-agent',
              lr = lr,
@@ -38,10 +39,14 @@ if __name__ == '__main__':
     while True:
       #qAgent.render()
       action = qAgent.pick_action(observation,episode=i,algo=algos[0])
+      actions = [u'左', u'下', u'右', u'上']
+      print actions[action]
+      print observation
       new_observation, reward, done, _ = qAgent.step(action)
       qAgent.learn(observation, action, reward, new_observation)
       observation = new_observation
       episode_r += reward
+      qAgent.render()
       if done:
 	break
     total_r.append(episode_r)
