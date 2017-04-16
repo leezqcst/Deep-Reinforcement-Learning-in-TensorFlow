@@ -61,8 +61,8 @@ class QAgent(object):
     return observation, reward, done, info
 
   def learn(self, state, action, reward, new_state):
-    time.sleep(0.1)
-    update = reward + self.gamma*(self.qTable[new_state,:].max())
+    #time.sleep(0.1)
+    update = reward + self.gamma*(self.qTable[new_state,:].max())\
         - self.qTable[state, action]
     self.qTable[state, action] += self.lr*update
     
