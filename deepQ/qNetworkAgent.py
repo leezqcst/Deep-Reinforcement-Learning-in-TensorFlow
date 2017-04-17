@@ -20,7 +20,7 @@ class QNetworkAgent(QAgent):
   
   def __init__(self, name, lr, epsilon, gamma, env_name,
         activation_fn=None, 
-        loss_fn=tf.squared_difference,
+        loss_fn=tf.square,
         optimizer_fn=tf.train.GradientDescentOptimizer):
 
     QAgent.__init__(self, name, lr, epsilon, gamma, env_name)
@@ -31,15 +31,15 @@ class QNetworkAgent(QAgent):
     self.init_op = tf.global_variables_initializer()
 
 
-  def pick_action(self, q_predicted, episode, algo='e-epsilon', softmax=True):
+  def pick_action(self, q_predicted, episode, algo='e-epsilon', shuffle=False, softmax=False):
     if algo == 'e-epsilon':
-      #if (episode+1)%50==0 and self.epsilon<0.99:
-        #self.epsilon *= 1.005
-      if np.random.uniform() < self.epsilon:
+      if np.random.rand(1) < self.epsilon:
         if softmax:
           softmax_fn = lambda x: np.exp(x-np.max(x))/np.exp(x-np.max(x)).sum()
           q_predicted = map(softmax_fn, q_predicted)
-        np.random.shuffle(q_predicted)
+
+        if shuffle:
+          np.random.shuffle(q_predicted)
         action = np.array(q_predicted).argmax()
       else:
         action = np.random.choice(range(self.action_space_num))
@@ -54,14 +54,12 @@ class QNetworkAgent(QAgent):
     self.q_target = tf.placeholder(dtype=tf.float32, shape=[1, self.action_space_num])
 
     with tf.variable_scope('q_target_network'):
-      self.q_predicted = tf.contrib.layers.fully_connected(
-           inputs = self.state,
-           num_outputs = self.action_space_num,
-           activation_fn = self.activation_fn
-      ) 
+      
+      W1 = tf.Variable(tf.random_uniform([self.observation_space_num,self.action_space_num],0,0.01), name='W1')
+      self.q_predicted = tf.matmul(self.state, W1)
       
     with tf.variable_scope('loss'):
-      self.loss = tf.reduce_mean(self.loss_fn(self.q_target, self.q_predicted))
+      self.loss = tf.reduce_sum(self.loss_fn(self.q_target - self.q_predicted))
 
     with tf.variable_scope('train'):
       self.train_op = self.optimizer.minimize(self.loss)
