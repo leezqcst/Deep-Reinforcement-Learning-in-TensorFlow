@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-""" base agent class for reinforcement learning
+""" Qetwork Agent
 
 author:zzw922cn
 date:2017-4-12
@@ -18,10 +18,16 @@ from qAgent import QAgent
 
 class QNetworkAgent(QAgent):
   
+  optimizers = [tf.train.GradientDescentOptimizer,
+                tf.train.AdadeltaOptimizer,
+                tf.train.AdagradOptimizer,
+                tf.train.AdamOptimizer,
+                tf.train.RMSPropOptimizer]
+
   def __init__(self, name, lr, epsilon, gamma, env_name,
         activation_fn=None, 
         loss_fn=tf.square,
-        optimizer_fn=tf.train.GradientDescentOptimizer):
+        optimizer_fn=optimizers[0]):
 
     QAgent.__init__(self, name, lr, epsilon, gamma, env_name)
     self.activation_fn = activation_fn
@@ -29,6 +35,7 @@ class QNetworkAgent(QAgent):
     self.optimizer = optimizer_fn(self.lr)
     self._build_network()
     self.init_op = tf.global_variables_initializer()
+    self.optimizer_fn = optimizer_fn
 
 
   def pick_action(self, q_predicted, episode, algo='e-epsilon', shuffle=False, softmax=False):

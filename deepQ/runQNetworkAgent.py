@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
-""" base agent class for reinforcement learning
+""" QNetworkAgent runner for reinforcement learning
 
 author:zzw922cn
-date:2017-4-12
+date:2017-4-14
 """
 import sys
 sys.path.append('../')
@@ -16,8 +16,8 @@ from qNetworkAgent import QNetworkAgent
 if __name__ == '__main__':
   np.random.seed(9)
   tf.set_random_seed(22)
-  num_episodes = 4000
-  lr = 0.1
+  num_episodes = 10000
+  lr = 0.05
   gamma = 0.99
   epsilon = 0.9
   algos = ['e-epsilon', 'noisy']
@@ -37,7 +37,7 @@ if __name__ == '__main__':
       episode_r = 0.
       state = qNetworkAgent.reset()
       count = 0
-      while count<99:
+      while True:
         #qNetworkAgent.render()
         count += 1
         q_predicted = sess.run(qNetworkAgent.q_predicted,
@@ -82,3 +82,5 @@ if __name__ == '__main__':
     plt.xlabel('episode')
     plt.ylabel('step')
     plt.show()
+
+    np.save(str(qNetworkAgent.optimizer_fn)+'.npy', total_perc_suc)
