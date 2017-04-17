@@ -19,9 +19,7 @@ from qAgent import QAgent
 class QNetworkAgent(QAgent):
   
   optimizers = [tf.train.GradientDescentOptimizer,
-                tf.train.AdadeltaOptimizer,
                 tf.train.AdagradOptimizer,
-                tf.train.AdamOptimizer,
                 tf.train.RMSPropOptimizer]
 
   def __init__(self, name, lr, epsilon, gamma, env_name,
@@ -38,13 +36,15 @@ class QNetworkAgent(QAgent):
     self.optimizer_fn = optimizer_fn
 
 
-  def pick_action(self, q_predicted, episode, algo='e-epsilon', shuffle=False, softmax=False):
+  def pick_action(self, q_predicted, episode, algo='e-epsilon', 
+          shuffle=False, softmax=False):
     if algo == 'e-epsilon':
       if np.random.rand(1) < self.epsilon:
         if softmax:
-          softmax_fn = lambda x: np.exp(x-np.max(x))/np.exp(x-np.max(x)).sum()
-          q_predicted = map(softmax_fn, q_predicted)
+          softmax_fn = lambda x: 
+              np.exp(x-np.max(x))/np.exp(x-np.max(x)).sum()
 
+          q_predicted = map(softmax_fn, q_predicted)
         if shuffle:
           np.random.shuffle(q_predicted)
         action = np.array(q_predicted).argmax()
@@ -60,7 +60,7 @@ class QNetworkAgent(QAgent):
     self.state = tf.placeholder(dtype=tf.float32, shape=[1, self.observation_space_num])
     self.q_target = tf.placeholder(dtype=tf.float32, shape=[1, self.action_space_num])
 
-    with tf.variable_scope('q_target_network'):
+    with tf.variable_scope('q_network'):
       
       W1 = tf.Variable(tf.random_uniform([self.observation_space_num,self.action_space_num],0,0.01), name='W1')
       self.q_predicted = tf.matmul(self.state, W1)

@@ -17,7 +17,7 @@ if __name__ == '__main__':
   np.random.seed(9)
   tf.set_random_seed(22)
   num_episodes = 10000
-  lr = 0.05
+  lr = 0.15
   gamma = 0.99
   epsilon = 0.9
   algos = ['e-epsilon', 'noisy']
@@ -58,7 +58,7 @@ if __name__ == '__main__':
         episode_r += reward
         state = new_state
         if done:
-          qNetworkAgent.epsilon = 1-1./((episode/50)+10)
+          qNetworkAgent.epsilon = 1-1./((episode/100)+10)
           break
         
       print('episode:'+str(episode)+',reward:'+str(episode_r))
@@ -82,5 +82,3 @@ if __name__ == '__main__':
     plt.xlabel('episode')
     plt.ylabel('step')
     plt.show()
-
-    np.save(str(qNetworkAgent.optimizer_fn)+'.npy', total_perc_suc)
