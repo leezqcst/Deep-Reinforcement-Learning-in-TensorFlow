@@ -56,13 +56,15 @@ class QNetworkAgent(QAgent):
     return action 
 
   def _build_network(self):
-    # define placeholder: state, q_target
-    self.state = tf.placeholder(dtype=tf.float32, shape=[1, self.observation_space_num])
-    self.q_target = tf.placeholder(dtype=tf.float32, shape=[1, self.action_space_num])
+    self.state = tf.placeholder(dtype=tf.float32, 
+        shape=[1, self.observation_space_num])
 
-    with tf.variable_scope('q_network'):
-      
-      W1 = tf.Variable(tf.random_uniform([self.observation_space_num,self.action_space_num],0,0.01), name='W1')
+    self.q_target = tf.placeholder(dtype=tf.float32, 
+        shape=[1, self.action_space_num])
+
+    with tf.variable_scope('q_network'):      
+      W1 = tf.Variable(tf.random_uniform(
+          [self.observation_space_num,self.action_space_num],0,0.01), name='W1')
       self.q_predicted = tf.matmul(self.state, W1)
       
     with tf.variable_scope('loss'):
@@ -76,3 +78,6 @@ class QNetworkAgent(QAgent):
       max_new_q = np.max(new_q_predicted)
       q_predicted[0, action] = reward + self.gamma*max_new_q
       self.learned_q_target = q_predicted
+
+
+
