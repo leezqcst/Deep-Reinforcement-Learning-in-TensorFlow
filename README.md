@@ -10,7 +10,7 @@ Reinforcement Learning In TensorFlow
 
 ## n-armed bandit problem
 ### optimal action with step
-![n-armed bandit optimal action %](https://github.com/zzw922cn/Deep-Reinforcement-Learning-in-TensorFlow/blob/master/img/armedbandit_optimal_actions.png)
+![n-armed bandit optimal action %](https://github.com/zzw922cn/Deep-Reinforcement-Learning-in-TensorFlow/blob/master/img/armedbandit/armedbandit_optimal_actions.png)
 
 ## gridworld problem
 ![gridworld %](https://github.com/zzw922cn/Deep-Reinforcement-Learning-in-TensorFlow/blob/master/img/gridworld/gridworld.png)
