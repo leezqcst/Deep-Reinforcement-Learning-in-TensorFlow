@@ -1,9 +1,12 @@
 # IntroRL-TensorFlow
 Reinforcement Learning In TensorFlow
 
-## Q Learning
+## Deep Q-Network
+### reward at each episode
+![reward at each episode %](https://github.com/zzw922cn/IntroRL-TensorFlow/blob/master/img/deepQ/reward.png)
 
-## Sarsa Learning
+### percentage of successful episode
+![percentage of successful episode %](https://github.com/zzw922cn/IntroRL-TensorFlow/blob/master/img/deepQ/perc_episode.png)
 
 ## n-armed bandit problem
 ### optimal action with step
